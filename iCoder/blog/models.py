@@ -21,3 +21,6 @@ class BlogComment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE) # cascad = when we delete Post of user in post table so delete this post on this comment also
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True) # self means itself it is foreign key of the table , this is for if we reply of the comment or it is only a comment
     timeStamp = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return self.comment[0:13]  + '... by ' + self.user.username
