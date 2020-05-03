@@ -1,20 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %} Blog Home {% endblock title %}
+{% block title %} Search Reasults {% endblock title %}
 {% block blogactive %}active {% endblock blogactive %}
 {% block body %}
 
 <div class="container">
-    <h1>Blog Home</h1>
-    <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark my-3">
-        <div class="col-md-6 px-0">
-            <h1 class="display-4 font-italic">Title of a longer featured blog post</h1>
-            <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and
-                efficiently about what’s most interesting in this post’s contents.</p>
-            <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
-        </div>
-    </div>
+    <h1>Blog Search</h1>
+    {% if allPosts|length < 1 %}
+    <pre>
+    Your search - <b>{{query}}</b> - did not match any documents.
 
+        Suggestions:
+
+        Make sure that all words are spelled correctly.
+        Try different keywords.
+        Try more general keywords.
+        Try fewer keywords.
+    </pre>
+    {% endif %}
     <div class="row mb-2">
         {% for post in allPosts %}
         <div class="col-md-6">

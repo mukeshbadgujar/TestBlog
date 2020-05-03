@@ -23,26 +23,168 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item {% block homeactive %} {% endblock homeactive %}">
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% block blogactive %} {% endblock blogactive %}">
                     <a class="nav-link" href="/blog">Blog</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% block aboutactive %} {% endblock aboutactive %}">
                     <a class="nav-link" href="/about">About</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contatc</a>
+                <li class="nav-item {% block contactactive %} {% endblock contactactive %}">
+                    <a class="nav-link" href="/contact">Contact</a>
                 </li>
 
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            <div class="ml-auto form-inline">
+                <form method="get" action="/search" class="my-2 my-lg-0 mx-3">
+                    <input class="form-control mr-sm-2" name="query" id="query" type="search" placeholder="Search"
+                        aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                {% if user.is_authenticated %}
+
+                <ul class="navbar-nav"> <!--mr-2-->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                            aria-expanded="false">Welcome <b>{{request.user}}</b></a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout">Log Out</a>
+                        </div>
+                    </li>
+                </ul>
+                {% else %}
+                <!-- Button trigger Login modal -->
+                <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#loginModal">
+                    Login
+                </button>
+                <!-- Button trigger Signup modal -->
+                <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#signUpModal">
+                    SignUp
+                </button>
+
+                {% endif %}
+            </div>
         </div>
     </nav>
+
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} mb-0 alert-dismissible fade show" role="alert">
+        <strong>Message: </strong> {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+
+
+
+
+    <!-- Signup Modal -->
+    <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signUpModalLabel">SignUp</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="/signup/" method="post"> {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="fnameSignUp">First Name</label>
+                                <input type="text" class="form-control" name="fnameSignUp" id="fnameSignUp"
+                                    placeholder="First Name" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="lnameSignUp">Last Name</label>
+                                <input type="text" class="form-control" name="lnameSignUp" id="lnameSignUp"
+                                    placeholder="Last Name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="usernameSignUp">Username</label>
+                            <input type="text" class="form-control" name="usernameSignUp" id="usernameSignUp"
+                                placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailSignUp">Email address</label>
+                            <input type="email" class="form-control" name="emailSignUp" id="emailSignUp"
+                                aria-describedby="emailHelp" placeholder="Email address" required>
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                else.</small>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="passSignUp">Password</label>
+                                <input type="password" class="form-control" name="passSignUp" id="passSignUp"
+                                    placeholder="Password" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="confPassSignUp">Confirm Password</label>
+                                <input type="password" class="form-control" name="confPassSignUp" id="confPassSignUp"
+                                    placeholder="Confirm Password" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">SignUp</button>
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="/login/" method="post"> {% csrf_token %}
+                        <div class="form-group">
+                            <label for="usernameLogin">Username</label>
+                            <input type="text" class="form-control" name="usernameLogin" id="usernameLogin"
+                                placeholder="Username / E-mail">
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordLogin">Password</label>
+                            <input type="text" class="form-control" name="passwordLogin" id="passwordLogin"
+                                placeholder="User Name">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {% block body %} {% endblock body %}
 
